@@ -1,0 +1,27 @@
+describe('Competencies', () => {
+  require('./create-group.e2e');
+  require('./create-competency.e2e');
+  require('./create-skill.e2e');
+  require('./create-sub-skill.e2e');
+  require('./change-group-owner.e2e');
+  require('./change-competency-owner.e2e');
+  require('./change-skill-owner.e2e');
+  require('./change-sub-skill-owner.e2e');
+  require('./describe-competency-proficiency-scale.e2e');
+  require('./describe-skill-proficiency-scales.e2e');
+  require('./describe-sub-skill-proficiency-scales.e2e');
+  require('./edit-group-name.e2e');
+  require('./edit-competency-name.e2e');
+  require('./edit-skill-name.e2e');
+  require('./edit-sub-skill-name.e2e');
+  require('./mark-competency-as-legacy-without-children.e2e');
+  require('./mark-skill-as-legacy-without-children.e2e');
+  require('./mark-sub-skill-as-legacy.e2e');
+  require('./mark-competency-as-legacy-with-children.e2e');
+  require('./mark-skill-as-legacy-with-children.e2e');
+  require('./mark-competency-as-ready.e2e');
+  require('./mark-skill-as-ready.e2e');
+  require('./mark-sub-skill-as-ready.e2e');
+  require('./turn-competency-off.e2e');
+  require('./turn-skill-off.e2e');
+});

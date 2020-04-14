@@ -1,0 +1,3 @@
+describe('Paces', () => {
+  require('./pace');
+});
