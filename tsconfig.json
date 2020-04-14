@@ -1,0 +1,20 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../out-tsc/e2e",
+    "baseUrl": "./",
+    "downlevelIteration": true,
+    "module": "commonjs",
+    "target": "es5",
+    "types": [
+      "jasmine",
+      "jasminewd2",
+      "node"
+    ],
+    "paths": {
+      "@app/*": ["../src/app/*"],
+      "@e2e/*": ["../e2e/*"],
+      "@pace/*": ["../src/app/features/pace/*"]
+    }
+  }
+}
