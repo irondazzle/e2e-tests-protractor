@@ -94,7 +94,7 @@ export class JobProfileRequirementsPage extends JobProfilePage {
   }
 
   getRequirementPSLevel(requirementTitle: string, jobLevelTitle: string) {
-    return this.getRequirementSelector(requirementTitle).$(`[e2e-id="${jobLevelTitle}"] span`).getText();
+    return this.getRequirementSelector(requirementTitle).$(`[e2e-id="${jobLevelTitle}"] ig-proficiency-scale-level-type`).getText();
   }
 
   private getRequirementSelector(requirementTitle: string) {

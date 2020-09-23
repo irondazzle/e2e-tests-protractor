@@ -96,7 +96,7 @@ export class JobFamilyRequirementsPage extends JobFamilyPage {
   }
 
   getRequirementPSLevel(jobTrackTitle: string, requirementTitle: string, jobLevelTitle: string) {
-    return this.getRequirementSelector(jobTrackTitle, requirementTitle).$(`[e2e-id="${jobLevelTitle}"] span`).getText();
+    return this.getRequirementSelector(jobTrackTitle, requirementTitle).$(`[e2e-id="${jobLevelTitle}"] ig-proficiency-scale-level-type`).getText();
   }
 
   private getRequirementSelector(jobTrackTitle: string, requirementTitle: string) {
