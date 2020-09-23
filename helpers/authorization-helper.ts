@@ -1,4 +1,4 @@
-import { $, $$, browser } from 'protractor';
+import { $, $$, browser, ElementFinder } from 'protractor';
 
 import { StorageKey } from '@app/models/storage-key.model';
 
@@ -6,13 +6,13 @@ import { clickOnElement, isDisplayed, setLocalStorageItem, waitForElement, waitU
 import { getI18nText } from './i18n-helper';
 import { clickOnMenuItem, isMenuItemDisplayed } from './menu-helper';
 
-const $useAnotherAccount = $('#otherTile');
+const $useAnotherAccount: ElementFinder = $('#otherTile');
 
-export async function logIn(liveId: string, password: string) {
-  const $confirmButton = $('#idSIButton9');
-  const $doNotShowCheckbox = $('#KmsiCheckboxField');
-  const $liveIdField = $('#i0116');
-  const $passwordField = $('#i0118');
+export async function logIn(liveId: string, password: string): Promise<void> {
+  const $confirmButton: ElementFinder = $('#idSIButton9');
+  const $doNotShowCheckbox: ElementFinder = $('#KmsiCheckboxField');
+  const $liveIdField: ElementFinder = $('#i0116');
+  const $passwordField: ElementFinder = $('#i0118');
 
   //For correct Protractor waiting is necessary to setup 'waitForAngularEnabled' to 'false' before all actions
   await browser.waitForAngularEnabled(false);
@@ -47,9 +47,9 @@ export async function logIn(liveId: string, password: string) {
   await browser.waitForAngularEnabled(true);
 }
 
-export async function logOut() {
-  const $currentUser = $('ig-auth-user');
-  const $previousUsers = $$('div[data-test-id$="intellias.com"]').get(0);
+export async function logOut(): Promise<void> {
+  const $currentUser: ElementFinder = $('ig-auth-user');
+  const $previousUsers: ElementFinder = $$('div[data-test-id$="intellias.com"]').get(0);
 
   await $currentUser.click();
   await waitUntil(() => isMenuItemDisplayed(getI18nText('logout')), false);

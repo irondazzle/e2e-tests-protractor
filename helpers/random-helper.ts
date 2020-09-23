@@ -17,17 +17,17 @@ const loremIpsumWords = `
   .map(word => word.trim())
   .filter(word => !!word);
 
-export function randomArray(from , to = from, elementGenerator) {
+export function randomArray(from: number, to: number = from, elementGenerator: any): any[] {
   return new Array(randomNumber(from, to)).fill(null).map(() => elementGenerator());
 }
 
-export function randomNumber(from , to = from) {
+export function randomNumber(from: number, to: number = from): number {
   return Math.round(Math.random() * (to - from)) + from;
 }
 
-export function randomString(from, to = from) {
-  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const length = randomNumber(from, to);
+export function randomString(from: number, to: number = from): string {
+  const chars: string = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const length: number = randomNumber(from, to);
 
   return '_'.repeat(length).replace(/_/g, () => {
     const charIndex = Math.round(Math.random() * chars.length - 1);
@@ -36,9 +36,9 @@ export function randomString(from, to = from) {
   });
 }
 
-export function randomText(from , to = from) {
-  const wordsCount = randomNumber(from , to);
-  const words = new Array(wordsCount)
+export function randomText(from: number, to: number = from): string {
+  const wordsCount: number = randomNumber(from , to);
+  const words: string[] = new Array(wordsCount)
     .fill('_')
     .map(() => loremIpsumWords[randomNumber(0, loremIpsumWords.length - 1)]);
 
