@@ -75,7 +75,7 @@ export async function isDisplayed($element: ElementFinder, options?: { timer?: b
       await scrollIntoView($element);
     }
   } catch(error) {
-    if (error.message.startsWith('No element found')) {
+    if (error.message.startsWith('No element found') || error.message.startsWith('stale element reference')) {
       return false;
     }
 
