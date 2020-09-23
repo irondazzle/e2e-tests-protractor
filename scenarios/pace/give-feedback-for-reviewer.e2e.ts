@@ -1,3 +1,5 @@
+import { browser } from 'protractor';
+
 import { logIn, logOut } from '@e2e/helpers/authorization-helper';
 import { waitUntil } from '@e2e/helpers/common-helper';
 import { jobProfileAndCompetencyCoordinatorRoles } from '@e2e/helpers/users-helper';
@@ -13,6 +15,7 @@ describe('Give feedback', () => {
   let answers: string;
   let comment: string;
   let feedbackCount: number;
+  let paceId: string;
 
   beforeAll(async () => {
     await myCurrentFeedbackPage.navigate();
@@ -39,6 +42,8 @@ describe('Give feedback', () => {
   });
 
   it('should give "Draft" feedback', async () => {
+    paceId = (await browser.getCurrentUrl()).split('/').pop();
+
     answers = await paceFeedbackFormPage.setQuestionAnswers();
     comment = await paceFeedbackFormPage.setFeedbackComment();
 
@@ -66,15 +71,16 @@ describe('Give feedback', () => {
     expect(await myCurrentFeedbackPage.isFeedbackRequestDisplayed(employee)).toBe(false);
   });
 
-  it('given feedback should be displayed in "completed" tab', async () => {
+  it('past feedback datatable should be displayed', async () => {
     await myPastFeedbackPage.navigate();
 
-    expect(await myPastFeedbackPage.isFeedbacksDatatableDisplayed()).toBe(true, 'Datatable');
-    expect(await myPastFeedbackPage.isFeedbackDisplayed(employee)).toBe(true, 'Feedback');
+    expect(await myPastFeedbackPage.isFeedbacksDatatableDisplayed()).toBe(true);
   });
 
   it('should check that given feedback marks and comment are correct', async () => {
-    await myPastFeedbackPage.clickOnEmployeeFeedback(employee);
+    await waitUntil(() => myPastFeedbackPage.isFeedbackDisplayed(paceId), false);
+
+    await myPastFeedbackPage.clickOnFeedback(paceId);
     await waitUntil(() => paceFeedbackFormPage.isDisplayed(), false);
 
     expect(await paceFeedbackFormPage.getQuestionAnswers()).toBe(answers, 'Answers');
