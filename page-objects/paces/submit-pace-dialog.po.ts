@@ -1,15 +1,9 @@
 import { $ } from 'protractor';
 
-import { clickOnElement, isDisplayed } from '@e2e/helpers/common-helper';
+import { BaseDialog } from '../base-dialog.po';
 
-export class SubmitPaceDialog {
-  private readonly $container = $('ig-submit-pace-dialog');
-
-  async clickOnSubmitButton() {
-    await clickOnElement(this.$container.$('[type="submit"]'));
-  }
-
-  isDisplayed() {
-    return isDisplayed(this.$container, { timer: true, withoutScroll: true });
+export class SubmitPaceDialog extends BaseDialog {
+  constructor() {
+    super($('ig-submit-pace-dialog'));
   }
 }

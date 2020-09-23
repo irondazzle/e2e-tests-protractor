@@ -1,15 +1,9 @@
 import { $ } from 'protractor';
 
-import { clickOnElement, isDisplayed } from '@e2e/helpers/common-helper';
+import { BaseDialog } from '../base-dialog.po';
 
-export class RemoveEntityRequirementDialog {
-  private readonly $container = $('ig-remove-entity-requirement-dialog');
-
-  async clickOnSubmitButton() {
-    await clickOnElement(this.$container.$('[type="submit"]'));
-  }
-
-  isDisplayed() {
-    return isDisplayed(this.$container, { withoutScroll: true });
+export class RemoveEntityRequirementDialog extends BaseDialog {
+  constructor() {
+    super($('ig-remove-entity-requirement-dialog'));
   }
 }

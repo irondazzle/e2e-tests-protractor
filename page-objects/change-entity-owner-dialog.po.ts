@@ -1,43 +1,40 @@
-import { $, $$ } from 'protractor';
+import { $, $$, ElementFinder, promise } from 'protractor';
 
-import { clearTextField, clickOnElement, isDisplayed, pressEnterKey } from '@e2e/helpers/common-helper';
+import { clearTextField, isDisplayed, pressEnterKey } from '@e2e/helpers/common-helper';
 
-export class ChangeEntityOwnerDialog {
-  private readonly $container = $('ig-change-entity-owner-dialog');
-  private readonly $firstAutoCompleteItem = $$('[role="option"]').first();
-  private readonly $ownerField = this.$container.$('ig-users-autocomplete input');
-  private readonly $ownerFieldError = this.$container.$('ig-users-autocomplete mat-error');
+import {  BaseDialog } from './base-dialog.po';
 
-  async clearOwnerField() {
+export class ChangeEntityOwnerDialog extends BaseDialog {
+  private readonly $firstAutoCompleteItem: ElementFinder = $$('[role="option"]').first();
+  private readonly $ownerField: ElementFinder = this.$container.$('ig-users-autocomplete input');
+  private readonly $ownerFieldError: ElementFinder = this.$container.$('ig-users-autocomplete mat-error');
+
+  constructor() {
+    super($('ig-change-entity-owner-dialog'));
+  }
+
+  async clearOwnerField(): Promise<void> {
     await clearTextField(this.$ownerField);
     await pressEnterKey();
   }
 
-  async clickOnSubmitButton() {
-    await clickOnElement(this.$container.$('[type="submit"]'));
-  }
-
-  getOwnerFieldErrorText() {
+  getOwnerFieldErrorText(): promise.Promise<string> {
     return this.$ownerFieldError.getText();
   }
 
-  getOwnerFieldValue() {
+  getOwnerFieldValue(): promise.Promise<string> {
     return this.$ownerField.getAttribute('value');
   }
 
-  isDisplayed() {
-    return isDisplayed(this.$container, { timer: true, withoutScroll: true });
-  }
-
-  isOwnerFieldDisplayed() {
+  isOwnerFieldDisplayed(): Promise<boolean> {
     return isDisplayed(this.$ownerField, { withoutScroll: true });
   }
 
-  isOwnerFieldErrorDisplayed() {
+  isOwnerFieldErrorDisplayed(): Promise<boolean> {
     return isDisplayed(this.$ownerFieldError, { withoutScroll: true });
   }
 
-  async setOwnerFieldValue(name: string) {
+  async setOwnerFieldValue(name: string): Promise<void> {
     await this.$ownerField.click();
     await this.$ownerField.clear();
     await this.$ownerField.sendKeys(name);

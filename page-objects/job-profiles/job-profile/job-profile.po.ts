@@ -1,4 +1,4 @@
-import { $ } from 'protractor';
+import { $, ElementFinder, promise } from 'protractor';
 
 import { clickOnElement, getElementByText, isDisplayed, waitUntil } from '@e2e/helpers/common-helper';
 import { getI18nText } from '@e2e/helpers/i18n-helper';
@@ -6,58 +6,58 @@ import { getI18nText } from '@e2e/helpers/i18n-helper';
 import { UpdateCareerMatrixDialog } from './update-career-matrix-dialog.po';
 
 export class JobProfilePage {
-  private readonly $container = $('ig-job-profile-container');
-  private readonly $additionalActions = this.$container.$('ig-additional-actions');
+  private readonly $container: ElementFinder = $('ig-job-profile-container');
+  private readonly $additionalActions: ElementFinder = this.$container.$('ig-additional-actions');
 
-  async clickOnAdditionalActions() {
+  async clickOnAdditionalActions(): Promise<void> {
     await clickOnElement(this.$additionalActions);
   }
 
-  async clickOnCreateCareerMatrixButton() {
+  async clickOnCreateCareerMatrixButton(): Promise<void> {
     await clickOnElement(this.getCareerMatrixButtonSelector(getI18nText('createMatrix')));
   }
 
-  async clickOnReloadCareerMatrixButton() {
+  async clickOnReloadCareerMatrixButton(): Promise<void> {
     await clickOnElement(this.getCareerMatrixButtonSelector(getI18nText('reloadMatrix')));
   }
 
-  getBreadcrumbsName() {
+  getBreadcrumbsName(): promise.Promise<string> {
     return this.$container.$('ig-breadcrumbs span').getText();
   }
 
-  private getCareerMatrixButtonSelector(title: string) {
+  private getCareerMatrixButtonSelector(title: string): ElementFinder {
     return getElementByText('[e2e-id="updateMatrixButton"]', title, this.$container);
   }
 
-  getHeaderName() {
+  getHeaderName(): promise.Promise<string> {
     return this.$container.$('ig-page-title').getText();
   }
 
-  isAdditionalActionsDisplayed() {
+  isAdditionalActionsDisplayed(): Promise<boolean> {
     return isDisplayed(this.$additionalActions, { withoutScroll: true });
   }
 
-  isCreateCareerMatrixButtonDisplayed() {
+  isCreateCareerMatrixButtonDisplayed(): Promise<boolean> {
     return isDisplayed(this.getCareerMatrixButtonSelector(getI18nText('createMatrix')), { withoutScroll: true });
   }
 
-  isDisplayed() {
+  isDisplayed(): Promise<boolean> {
     return isDisplayed(this.$container, { withoutScroll: true });
   }
 
-  isReloadCareerMatrixButtonDisplayed() {
+  isReloadCareerMatrixButtonDisplayed(): Promise<boolean> {
     return isDisplayed(this.getCareerMatrixButtonSelector(getI18nText('reloadMatrix')), { withoutScroll: true });
   }
 
-  async isDisplayedAssert() {
-    const isDisplayed = await this.isDisplayed();
+  async isDisplayedAssert(): Promise<void> {
+    const isDisplayed: boolean = await this.isDisplayed();
 
     if (!isDisplayed) {
       throw new Error('You are not on Job Profile');
     }
   }
 
-  async updateCareerMatrix() {
+  async updateCareerMatrix(): Promise<void> {
     const isCreateFlow = await this.isCreateCareerMatrixButtonDisplayed();
     const updateCareerMatrixDialog = new UpdateCareerMatrixDialog();
 

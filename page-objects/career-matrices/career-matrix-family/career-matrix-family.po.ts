@@ -1,4 +1,4 @@
-import { $ } from 'protractor';
+import { $, ElementArrayFinder, ElementFinder } from 'protractor';
 
 import {
   clickOnElement,
@@ -13,48 +13,48 @@ import { CareerMatrixPage } from '../career-matrix/career-matrix.po';
 import { CareerMatrixGroupPage } from '../career-matrix-group/career-matrix-group.po';
 
 export class CareerMatrixFamilyPage {
-  private readonly $container = $('ig-career-matrix-family-container');
-  private readonly $breadcrumbs = this.$container.$('ig-breadcrumbs');
+  private readonly $container: ElementFinder = $('ig-career-matrix-family-container');
+  private readonly $breadcrumbs: ElementFinder = this.$container.$('ig-breadcrumbs');
 
-  getBreadcrumbsParents() {
+  getBreadcrumbsParents(): ElementArrayFinder {
     return this.$breadcrumbs.$$('a');
   }
 
-  getGroupId(title: string) {
+  getGroupId(title: string): Promise<string> {
     return getItemId('ig-entities-card-tile > a[href*="/group/"]', title);
   }
 
-  getMatrixId(title: string) {
+  getMatrixId(title: string): Promise<string> {
     return getItemId('ig-entities-card-tile > a[href*="/matrix/"]', title);
   }
 
-  isDisplayed() {
+  isDisplayed(): Promise<boolean> {
     return isDisplayed(this.$container, { withoutScroll: true });
   }
 
-  isGroupDisplayed(title: string) {
+  isGroupDisplayed(title: string): Promise<boolean> {
     return isDisplayed(getElementByText('ig-entities-card-tile span', title));
   }
 
-  isMatrixDisplayed(title: string) {
+  isMatrixDisplayed(title: string): Promise<boolean> {
     return isDisplayed(getElementByText('ig-entities-card-tile span', title));
   }
 
-  async navigateToGroup(id: string) {
+  async navigateToGroup(id: string): Promise<void> {
     const careerMatrixGroupPage = new CareerMatrixGroupPage();
 
     await clickOnElement($(`[href$="/group/${id}"]`));
     await waitUntil(() => careerMatrixGroupPage.isDisplayed(), false);
   }
 
-  async navigateToMatrix(id: string) {
+  async navigateToMatrix(id: string): Promise<void> {
     const careerMatrixPage = new CareerMatrixPage();
 
     await clickOnElement($(`[href$="/matrix/${id}"]`));
     await waitUntil(() => careerMatrixPage.isDisplayed(), false);
   }
 
-  async navigateToParent() {
+  async navigateToParent(): Promise<void> {
     await scrollToTop();
 
     await clickOnElement(this.getBreadcrumbsParents().last());

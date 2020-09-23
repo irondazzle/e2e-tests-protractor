@@ -1,53 +1,47 @@
-import { $, $$ } from 'protractor';
+import { $, $$, ElementFinder, promise } from 'protractor';
 
 import { ProficiencyScaleDefinitionMode } from '@app/models/proficiency-scale-definition-mode.model';
 
-import { clearTextField, clickOnElement, isDisplayed, pressEnterKey } from '@e2e/helpers/common-helper';
+import { clearTextField, isDisplayed, pressEnterKey } from '@e2e/helpers/common-helper';
 
-export class CreateCompetenciesNodeDialog {
-  private readonly $container = $(this.selector);
-  private readonly $firstAutoCompleteItem = $$('[role="option"]').first();
-  private readonly $nameField = this.$container.$('[e2e-id="nameField"] input');
-  private readonly $nameFieldError = this.$container.$('[e2e-id="nameField"] mat-error');
-  private readonly $ownerField = this.$container.$('ig-users-autocomplete input');
-  private readonly $ownerFieldError = this.$container.$('ig-users-autocomplete mat-error');
-  private readonly $psdmBasic = this.$container.$('mat-radio-button[e2e-id="psdm-basic"]');
-  private readonly $psdmExtended = this.$container.$('mat-radio-button[e2e-id="psdm-extended"]');
-  private readonly $submitButton = this.$container.$('[type="submit"]');
+import { BaseDialog } from '../../base-dialog.po';
 
-  constructor(private readonly selector: string) {}
+export class CreateCompetenciesNodeDialog extends BaseDialog {
+  private readonly $firstAutoCompleteItem: ElementFinder = $$('[role="option"]').first();
+  private readonly $nameField: ElementFinder = this.$container.$('[e2e-id="nameField"] input');
+  private readonly $nameFieldError: ElementFinder = this.$container.$('[e2e-id="nameField"] mat-error');
+  private readonly $ownerField: ElementFinder = this.$container.$('ig-users-autocomplete input');
+  private readonly $ownerFieldError: ElementFinder = this.$container.$('ig-users-autocomplete mat-error');
+  private readonly $psdmBasic: ElementFinder = this.$container.$('mat-radio-button[e2e-id="psdm-basic"]');
+  private readonly $psdmExtended: ElementFinder = this.$container.$('mat-radio-button[e2e-id="psdm-extended"]');
 
-  async clearNameField() {
+  async clearNameField(): Promise<void> {
     await clearTextField(this.$nameField);
     await pressEnterKey();
   }
 
-  async clearOwnerField() {
+  async clearOwnerField(): Promise<void> {
     await clearTextField(this.$ownerField);
     await pressEnterKey();
   }
 
-  async clickOnSubmitButton() {
-    await clickOnElement(this.$submitButton);
-  }
-
-  getNameFieldErrorText() {
+  getNameFieldErrorText(): promise.Promise<string> {
     return this.$nameFieldError.getText();
   }
 
-  getNameFieldValue() {
+  getNameFieldValue(): promise.Promise<string> {
     return this.$nameField.getAttribute('value');
   }
 
-  getOwnerFieldErrorText() {
+  getOwnerFieldErrorText(): promise.Promise<string> {
     return this.$ownerFieldError.getText();
   }
 
-  getOwnerFieldValue() {
+  getOwnerFieldValue(): promise.Promise<string> {
     return this.$ownerField.getAttribute('value');
   }
 
-  async getPSModeValue() {
+  async getPSModeValue(): Promise<ProficiencyScaleDefinitionMode> {
     if ((await this.$psdmBasic.getAttribute('class')).includes('mat-radio-checked')) {
       return ProficiencyScaleDefinitionMode.Basic;
     }
@@ -59,44 +53,40 @@ export class CreateCompetenciesNodeDialog {
     return null;
   }
 
-  isDisplayed() {
-    return isDisplayed(this.$container, { timer: true, withoutScroll: true });
-  }
-
-  isNameFieldDisplayed() {
+  isNameFieldDisplayed(): Promise<boolean> {
     return isDisplayed(this.$nameField, { withoutScroll: true });
   }
 
-  isNameFieldErrorDisplayed() {
+  isNameFieldErrorDisplayed(): Promise<boolean> {
     return isDisplayed(this.$nameFieldError, { withoutScroll: true });
   }
 
-  isOwnerFieldDisplayed() {
+  isOwnerFieldDisplayed(): Promise<boolean> {
     return isDisplayed(this.$ownerField, { withoutScroll: true });
   }
 
-  isOwnerFieldErrorDisplayed() {
+  isOwnerFieldErrorDisplayed(): Promise<boolean> {
     return isDisplayed(this.$ownerFieldError, { withoutScroll: true });
   }
 
-  async isSubmitButtonEnabled() {
+  async isSubmitButtonEnabled(): Promise<boolean> {
     const disabledValue = await this.$submitButton.getAttribute('disabled');
 
     return !JSON.parse(disabledValue || null);
   }
 
-  async setNameFieldValue(name: string) {
+  async setNameFieldValue(name: string): Promise<void> {
     await this.$nameField.clear();
     await this.$nameField.sendKeys(name);
   }
 
-  async setOwnerFieldValue(name: string) {
+  async setOwnerFieldValue(name: string): Promise<void> {
     await this.$ownerField.clear();
     await this.$ownerField.sendKeys(name);
     await this.$firstAutoCompleteItem.click();
   }
 
-  setPSMode(mode: ProficiencyScaleDefinitionMode) {
+  setPSMode(mode: ProficiencyScaleDefinitionMode): promise.Promise<void> {
     if (mode === ProficiencyScaleDefinitionMode.Basic) {
       return this.$psdmBasic.click();
     }

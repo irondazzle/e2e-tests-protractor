@@ -4,7 +4,7 @@ import { clickOnElement, getElementByText, isDisplayed, waitUntil } from '@e2e/h
 import { getI18nText } from '@e2e/helpers/i18n-helper';
 
 export class JobFamiliesPage {
-  async navigate() {
+  async navigate(): Promise<void> {
     await clickOnElement(getElementByText('ig-sidenav-item a', getI18nText('jobProfiles')));
     await waitUntil(() => isDisplayed($('ig-job-families-container')), false);
   }

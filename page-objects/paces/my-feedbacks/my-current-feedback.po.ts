@@ -1,4 +1,4 @@
-import { $ } from 'protractor';
+import { $, ElementFinder, promise } from 'protractor';
 
 import { clickOnElement, getElementByText, isDisplayed, waitUntil } from '@e2e/helpers/common-helper';
 import { getI18nText } from '@e2e/helpers/i18n-helper';
@@ -9,28 +9,28 @@ import { PaceFeedbackFormPage } from '../pace-feedback-form.po';
 import { OugoingFeedbackPage } from './outgoing-feedback.po';
 
 export class MyCurrentFeedbackPage extends OugoingFeedbackPage {
-  private readonly $container = $('ig-current-container');
-  private readonly $feedbacksDatatable = this.$container.$('ig-reviewer-pace-feedbacks-datatable');
-  private readonly finishFeedbackButton = '[e2e-id="finishFeedbackButton"]';
-  private readonly giveFeedbackButton = '[e2e-id="giveFeedbackButton"]';
+  private readonly $container: ElementFinder = $('ig-current-container');
+  private readonly $feedbacksDatatable: ElementFinder = this.$container.$('ig-reviewer-pace-feedbacks-datatable');
+  private readonly finishFeedbackButton: string = '[e2e-id="finishFeedbackButton"]';
+  private readonly giveFeedbackButton: string = '[e2e-id="giveFeedbackButton"]';
 
-  async clickOnFinishFeedbackButton(employee: string) {
+  async clickOnFinishFeedbackButton(employee: string): Promise<void> {
     await clickOnElement(this.getEmployeeSelector(employee).$(this.finishFeedbackButton));
   }
 
-  async clickOnGiveFeedbackButton(employee: string) {
+  async clickOnGiveFeedbackButton(employee: string): Promise<void> {
     await clickOnElement(this.getEmployeeSelector(employee).$(this.giveFeedbackButton));
   }
 
-  private getEmployeeSelector(employee: string) {
+  private getEmployeeSelector(employee: string): ElementFinder {
     return getElementByText('tr', employee, this.$feedbacksDatatable);
   }
 
-  getFeedbacksCount() {
+  getFeedbacksCount(): promise.Promise<number> {
     return this.$container.$$('ig-user').count();
   }
 
-  async giveFeedback(employee: string) {
+  async giveFeedback(employee: string): Promise<void> {
     const alertDialog = new AlertDialog();
     const paceFeedbackFormPage = new PaceFeedbackFormPage();
 
@@ -49,23 +49,23 @@ export class MyCurrentFeedbackPage extends OugoingFeedbackPage {
     await waitUntil(() => this.isFeedbackRequestDisplayed(employee), true);
   }
 
-  isFeedbackRequestDisplayed(employee: string) {
+  isFeedbackRequestDisplayed(employee: string): Promise<boolean> {
     return isDisplayed(this.getEmployeeSelector(employee));
   }
 
-  isFeedbacksDatatableDisplayed() {
+  isFeedbacksDatatableDisplayed(): Promise<boolean> {
     return isDisplayed(this.$feedbacksDatatable);
   }
 
-  isFinishFeedbackButtonDisplayed(employee: string) {
+  isFinishFeedbackButtonDisplayed(employee: string): Promise<boolean> {
     return isDisplayed(this.getEmployeeSelector(employee).$(this.finishFeedbackButton));
   }
 
-  isGiveFeedbackButtonDisplayed(employee: string) {
+  isGiveFeedbackButtonDisplayed(employee: string): Promise<boolean> {
     return isDisplayed(this.getEmployeeSelector(employee).$(this.giveFeedbackButton));
   }
 
-  async navigate() {
+  async navigate(): Promise<void> {
     await super.navigate();
 
     await clickOnElement(getElementByText('ig-tabs-navigation a', getI18nText('inProgress')));

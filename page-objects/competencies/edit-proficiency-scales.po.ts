@@ -7,18 +7,18 @@ import { clickOnElement, isDisplayed, scrollIntoView } from '@e2e/helpers/common
 import { randomArray, randomNumber, randomText } from '@e2e/helpers/random-helper';
 
 export class EditProficiencyScalePage {
-  private readonly $container = $('ig-edit-proficiency-scale');
-  private readonly $definitionModeControl = this.$container.$('ig-definition-mode-control');
+  private readonly $container: ElementFinder = $('ig-edit-proficiency-scale');
+  private readonly $definitionModeControl: ElementFinder = this.$container.$('ig-definition-mode-control');
 
-  async clickOnDefinitionModeControl() {
+  async clickOnDefinitionModeControl(): Promise<void> {
     await clickOnElement(this.$definitionModeControl);
   }
 
-  async clickOnSubmitButton() {
+  async clickOnSubmitButton(): Promise<void> {
     await clickOnElement(this.$container.$('[type="submit"]'));
   }
 
-  async fillPS(mode: ProficiencyScaleDefinitionMode = ProficiencyScaleDefinitionMode.Basic) {
+  async fillPS(mode: ProficiencyScaleDefinitionMode = ProficiencyScaleDefinitionMode.Basic): Promise<void> {
     const requirements = {
       [ProficiencyScaleLevelType.Qualified]: randomArray(5, 8, () => randomText(randomNumber(2, 8))),
       [ProficiencyScaleLevelType.UpperQualified]: randomArray(3, 7, () => randomText(randomNumber(1, 7))),
@@ -37,11 +37,11 @@ export class EditProficiencyScalePage {
     }
   }
 
-  async fillRequirements(type: ProficiencyScaleLevelType, requirements: string[]) {
-    const $levelContainer = this.getLevelSelector(type);
-    const $addField = $levelContainer.$('.add-button');
-    const requirementsCount = await $levelContainer.$$('mat-form-field').count();
-    const timesToClick = requirements.length - requirementsCount;
+  async fillRequirements(type: ProficiencyScaleLevelType, requirements: string[]): Promise<void> {
+    const $levelContainer: ElementFinder = this.getLevelSelector(type);
+    const $addField: ElementFinder = $levelContainer.$('.add-button');
+    const requirementsCount: number = await $levelContainer.$$('mat-form-field').count();
+    const timesToClick: number = requirements.length - requirementsCount;
 
     if (timesToClick > 0) {
       for (let i = 0; i < timesToClick; i++) {
@@ -53,7 +53,7 @@ export class EditProficiencyScalePage {
     }
 
     for (let i = 0; i < requirements.length; i++) {
-      const $requirement = $levelContainer.$$('mat-form-field').get(i).$('textarea');
+      const $requirement: ElementFinder = $levelContainer.$$('mat-form-field').get(i).$('textarea');
 
       await scrollIntoView($requirement);
       await $requirement.click();
@@ -66,15 +66,15 @@ export class EditProficiencyScalePage {
     return $(`[e2e-id="${type}"]`);
   }
 
-  isDefinitionModeControlDisplayed() {
+  isDefinitionModeControlDisplayed(): Promise<boolean> {
     return isDisplayed(this.$definitionModeControl, { timer: true });
   }
 
-  isDisplayed() {
+  isDisplayed(): Promise<boolean> {
     return isDisplayed(this.$container, { withoutScroll: true });
   }
 
-  isLevelDisplayed(type: ProficiencyScaleLevelType) {
+  isLevelDisplayed(type: ProficiencyScaleLevelType): Promise<boolean> {
     return isDisplayed(this.getLevelSelector(type));
   }
 }

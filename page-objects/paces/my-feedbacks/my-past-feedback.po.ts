@@ -1,4 +1,4 @@
-import { $ } from 'protractor';
+import { $, ElementFinder } from 'protractor';
 
 import { clickOnElement, getElementByText, isDisplayed, waitUntil } from '@e2e/helpers/common-helper';
 import { getI18nText } from '@e2e/helpers/i18n-helper';
@@ -6,26 +6,26 @@ import { getI18nText } from '@e2e/helpers/i18n-helper';
 import { OugoingFeedbackPage } from './outgoing-feedback.po';
 
 export class MyPastFeedbackPage extends OugoingFeedbackPage {
-  private readonly $container = $('ig-past-container');
-  private readonly $feedbacksDatatable = this.$container.$('ig-reviewer-pace-feedbacks-datatable');
+  private readonly $container: ElementFinder = $('ig-past-container');
+  private readonly $feedbacksDatatable: ElementFinder = this.$container.$('ig-reviewer-pace-feedbacks-datatable');
 
-  async clickOnEmployeeFeedback(employee: string) {
-    await clickOnElement(this.getEmployeeSelector(employee));
+  async clickOnFeedback(paceId: string): Promise<void> {
+    await clickOnElement(this.getFeedbackSelector(paceId));
   }
 
-  private getEmployeeSelector(employee: string) {
-    return getElementByText('tr', employee, this.$feedbacksDatatable);
+  private getFeedbackSelector(paceId: string): ElementFinder {
+    return this.$feedbacksDatatable.$(`[e2e-value="${paceId}"`);
   }
 
-  isFeedbacksDatatableDisplayed() {
+  isFeedbacksDatatableDisplayed(): Promise<boolean> {
     return isDisplayed(this.$feedbacksDatatable);
   }
 
-  isFeedbackDisplayed(employee: string) {
-    return isDisplayed(this.getEmployeeSelector(employee));
+  isFeedbackDisplayed(paceId: string): Promise<boolean> {
+    return isDisplayed(this.getFeedbackSelector(paceId));
   }
 
-  async navigate() {
+  async navigate(): Promise<void> {
     await super.navigate();
 
     await clickOnElement(getElementByText('ig-tabs-navigation a', getI18nText('COMPLETED')));

@@ -1,4 +1,4 @@
-import { $ } from 'protractor';
+import { $, ElementArrayFinder, ElementFinder, promise } from 'protractor';
 
 import { clickOnElement, isDisplayed, scrollToTop, waitUntil } from '@e2e/helpers/common-helper';
 import { getI18nText } from '@e2e/helpers/i18n-helper';
@@ -7,53 +7,53 @@ import { clickOnMenuItem } from '@e2e/helpers/menu-helper';
 import { MarkAsLegacyDialog } from '@e2e/page-objects';
 
 export class CompetenciesNodePage {
-  private readonly $container = $('ig-competencies-node-container');
-  private readonly $additionalActions = this.$container.$('ig-additional-actions');
-  private readonly $breadcrumbs = this.$container.$('ig-breadcrumbs');
-  private readonly $headerName = this.$container.$('ig-competencies-node-name');
-  private readonly $headerSuffix = this.$headerName.$('span');
+  private readonly $container: ElementFinder = $('ig-competencies-node-container');
+  private readonly $additionalActions: ElementFinder = this.$container.$('ig-additional-actions');
+  private readonly $breadcrumbs: ElementFinder = this.$container.$('ig-breadcrumbs');
+  private readonly $headerName: ElementFinder = this.$container.$('ig-competencies-node-name');
+  private readonly $headerSuffix: ElementFinder = this.$headerName.$('span');
 
-  async clickOnAdditionalActions() {
+  async clickOnAdditionalActions(): Promise<void> {
     await clickOnElement(this.$additionalActions);
   }
 
-  getBreadcrumbsName() {
+  getBreadcrumbsName(): promise.Promise<string> {
     return this.$breadcrumbs.$('span').getText();
   }
 
-  getBreadcrumbsParents() {
+  getBreadcrumbsParents(): ElementArrayFinder {
     return this.$breadcrumbs.$$('a');
   }
 
-  getHeaderName() {
+  getHeaderName(): promise.Promise<string> {
     return this.$headerName.getText();
   }
 
-  getHeaderSuffixName() {
+  getHeaderSuffixName(): promise.Promise<string> {
     return this.$headerSuffix.getText();
   }
 
-  isAdditionalActionsDisplayed() {
+  isAdditionalActionsDisplayed(): Promise<boolean> {
     return isDisplayed(this.$additionalActions, { withoutScroll: true });
   }
 
-  isDisplayed() {
+  isDisplayed(): Promise<boolean> {
     return isDisplayed(this.$container, { withoutScroll: true });
   }
 
-  async isDisplayedAssert() {
-    const isDisplayed = await this.isDisplayed();
+  async isDisplayedAssert(): Promise<void> {
+    const isDisplayed: boolean = await this.isDisplayed();
 
     if (!isDisplayed) {
       throw new Error('You are not on Competency');
     }
   }
 
-  isHeaderSuffixAdded() {
+  isHeaderSuffixAdded(): Promise<boolean> {
     return isDisplayed(this.$headerSuffix);
   }
 
-  async markAsLegacy() {
+  async markAsLegacy(): Promise<void> {
     const markEntityAsLegacyDialog = new MarkAsLegacyDialog();
 
     await this.clickOnAdditionalActions();
@@ -64,7 +64,7 @@ export class CompetenciesNodePage {
     await waitUntil(() => this.isHeaderSuffixAdded(), false);
   }
 
-  async navigateToParent() {
+  async navigateToParent(): Promise<void> {
     await scrollToTop();
 
     await clickOnElement(this.getBreadcrumbsParents().last());

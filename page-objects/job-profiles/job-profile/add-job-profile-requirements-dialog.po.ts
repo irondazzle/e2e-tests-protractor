@@ -1,49 +1,44 @@
-import { $ } from 'protractor';
+import { $, ElementFinder, promise } from 'protractor';
 
 import { clickOnElement, getElementByText, isDisplayed } from '@e2e/helpers/common-helper';
 
-export class AddJobProfileRequirementsDialog {
-  private readonly $container = $('ig-add-job-profile-requirements-dialog');
-  private readonly $submitButton = this.$container.$('[type="submit"]');
+import { BaseDialog } from '../../base-dialog.po';
 
-  async clickOnRequirement(requirementTitle: string) {
+export class AddJobProfileRequirementsDialog extends BaseDialog {
+  constructor() {
+    super($('ig-add-job-profile-requirements-dialog'));
+  }
+
+  async clickOnRequirement(requirementTitle: string): Promise<void> {
     await clickOnElement(this.getRequirementSelector(requirementTitle));
   }
 
-  async clickOnSubmitButton() {
-    await clickOnElement(this.$submitButton);
-  }
-
-  getNavigationText() {
+  getNavigationText(): promise.Promise<string> {
     return this.$container.$('ig-navigation span.requirement-body-name').getText();
   }
 
-  getNavigationSuffixText() {
+  getNavigationSuffixText(): promise.Promise<string> {
     return this.$container.$('ig-navigation span.type').getText();
   }
 
-  private getRequirementSelector(requirementTitle: string) {
+  private getRequirementSelector(requirementTitle: string): ElementFinder {
     return getElementByText('[e2e-type="requirement"] span.requirement-body-name', requirementTitle, this.$container);
   }
 
-  isDisplayed() {
-    return isDisplayed(this.$container, { timer: true, withoutScroll: true });
-  }
-
-  isRequirementDisplayed(requirementTitle: string) {
+  isRequirementDisplayed(requirementTitle: string): Promise<boolean> {
     return isDisplayed(this.getRequirementSelector(requirementTitle));
   }
 
-  async isRequirementEnabled(requirementTitle: string) {
+  async isRequirementEnabled(requirementTitle: string): Promise<boolean> {
     return !(await getElementByText('ig-selectable-requirement',requirementTitle).$('mat-checkbox').getAttribute('class')).includes('mat-checkbox-disabled');
   }
 
-  async isRequirementSelected(requirementTitle: string) {
+  async isRequirementSelected(requirementTitle: string): Promise<boolean> {
     return (await getElementByText('ig-selectable-requirement',requirementTitle).$('mat-checkbox').getAttribute('class')).includes('mat-checkbox-checked');
   }
 
-  async isSubmitButtonEnabled() {
-    const disabledValue = await this.$submitButton.getAttribute('disabled');
+  async isSubmitButtonEnabled(): Promise<boolean> {
+    const disabledValue: string = await this.$submitButton.getAttribute('disabled');
 
     return !JSON.parse(disabledValue || null);
   }

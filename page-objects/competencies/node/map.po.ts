@@ -1,4 +1,4 @@
-import { $ } from 'protractor';
+import { $, ElementFinder } from 'protractor';
 
 import { ProficiencyScaleDefinitionMode } from '@app/models/proficiency-scale-definition-mode.model';
 
@@ -8,16 +8,16 @@ import { CreateCompetenciesNodeChildDialog } from './create-node-child-dialog.po
 import { CompetenciesNodePage } from './node.po';
 
 export class CompetenciesNodeMapPage extends CompetenciesNodePage {
-  private readonly $createChildButton = $('[e2e-id="createChildButton"]');
+  private readonly $createChildButton: ElementFinder = $('[e2e-id="createChildButton"]');
 
-  async clickOnCreateChildButton() {
+  async clickOnCreateChildButton(): Promise<void> {
     await clickOnElement(this.$createChildButton);
   }
 
   async createAndNavigateToChild(
     psMode: ProficiencyScaleDefinitionMode = ProficiencyScaleDefinitionMode.Basic,
     childName: string = generateName()
-  ) {
+  ): Promise<string> {
     await this.navigate();
 
     const createChildDialog = new CreateCompetenciesNodeChildDialog();
@@ -38,21 +38,21 @@ export class CompetenciesNodeMapPage extends CompetenciesNodePage {
     return childId;
   }
 
-  getChildId(name: string) {
+  getChildId(name: string): Promise<string> {
     return getItemId('ig-entities-card-tile > a[href*="/node/"]', name);
   }
 
-  isCreateChildButtonDisplayed() {
+  isCreateChildButtonDisplayed(): Promise<boolean> {
     return isDisplayed(this.$createChildButton);
   }
 
-  async navigate() {
+  async navigate(): Promise<void> {
     await this.isDisplayedAssert();
     await clickOnElement($('ig-tabs-navigation a[href$="/map"]'));
     await waitUntil(() =>  isDisplayed($('ig-map-container')), false);
   }
 
-  async navigateToChild(id: string) {
+  async navigateToChild(id: string): Promise<void> {
     const parents = this.getBreadcrumbsParents();
     const parentsCount = await parents.count();
 

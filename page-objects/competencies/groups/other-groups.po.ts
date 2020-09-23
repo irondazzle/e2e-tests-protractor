@@ -8,14 +8,14 @@ import { CompetenciesGroupPage } from '../group';
 import { CompetenciesGroupsPage } from './groups.po';
 
 export class OtherCompetenciesGroupsPage extends CompetenciesGroupsPage {
-  async navigate() {
+  async navigate(): Promise<void> {
     await super.navigate();
 
     await clickOnElement(getElementByText('ig-tabs-navigation a', getI18nText('otherGroups')));
     await waitUntil(() => isDisplayed($('ig-other-competencies-groups-container')), false);
   }
 
-  async navigateToCompetencyGroup(id: string) {
+  async navigateToCompetencyGroup(id: string): Promise<void> {
     const groupPage = new CompetenciesGroupPage();
 
     await clickOnElement($(`[href$="/group/${id}"]`));

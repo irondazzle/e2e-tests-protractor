@@ -1,4 +1,4 @@
-import { $ } from 'protractor';
+import { $, ElementFinder, promise } from 'protractor';
 
 import { clickOnElement, getElementByText, isDisplayed, waitUntil } from '@e2e/helpers/common-helper';
 import { getI18nText } from '@e2e/helpers/i18n-helper';
@@ -10,9 +10,9 @@ import { AddJobFamilyRequirementsDialog } from './add-job-family-requirements-di
 import { JobFamilyPage } from './job-family.po';
 
 export class JobFamilyRequirementsPage extends JobFamilyPage {
-  private readonly $addRequirementsButton = $('[e2e-id="addRequirementsButton"] button');
+  private readonly $addRequirementsButton: ElementFinder = $('[e2e-id="addRequirementsButton"] button');
 
-  async addRequirement(jobTracks: string[] | string, requirementPath: string[]) {
+  async addRequirement(jobTracks: string[] | string, requirementPath: string[]): Promise<string> {
     const addJobFamilyRequirementsDialog = new AddJobFamilyRequirementsDialog();
     let jobTrack: string;
 
@@ -40,17 +40,17 @@ export class JobFamilyRequirementsPage extends JobFamilyPage {
     return jobTrack;
   }
 
-  async assignRequirement(jobTrackTitle: string, requirementTitle: string) {
+  async assignRequirement(jobTrackTitle: string, requirementTitle: string): Promise<Map<string, string>> {
     const editEntityRequirementPage = new EditEntityRequirementPage();
     const jobLevelsToPSLevelsMap: Map<string, string> = new Map();
-    const requirementAssignmentHash = await this.getRequirementAssignmentHash(jobTrackTitle, requirementTitle);
+    const requirementAssignmentHash: string = await this.getRequirementAssignmentHash(jobTrackTitle, requirementTitle);
 
     await this.clickOnAssignButton(jobTrackTitle, requirementTitle);
     await waitUntil(() => editEntityRequirementPage.isDisplayed(), false);
 
     await editEntityRequirementPage.clickOnNextPSLevel(0);
 
-    const jobLevelsCount = await editEntityRequirementPage.getJobLevelsCount();
+    const jobLevelsCount: number = await editEntityRequirementPage.getJobLevelsCount();
 
     await editEntityRequirementPage.clickOnNextPSLevel(randomNumber(0, jobLevelsCount - 1));
 
@@ -69,21 +69,21 @@ export class JobFamilyRequirementsPage extends JobFamilyPage {
     return jobLevelsToPSLevelsMap;
   }
 
-  async clickOnAddRequirementsButton() {
+  async clickOnAddRequirementsButton(): Promise<void> {
     await clickOnElement(this.$addRequirementsButton);
   }
 
-  async clickOnAssignButton(jobTrackTitle: string, requirementTitle: string) {
+  async clickOnAssignButton(jobTrackTitle: string, requirementTitle: string): Promise<void> {
     await clickOnElement(getElementByText('button', getI18nText('assign'), this.getRequirementSelector(jobTrackTitle, requirementTitle)));
   }
 
-  async clickOnRequirementAdditionalActions(jobTrackTitle: string, requirementTitle: string) {
+  async clickOnRequirementAdditionalActions(jobTrackTitle: string, requirementTitle: string): Promise<void> {
     await clickOnElement(this.getRequirementSelector(jobTrackTitle, requirementTitle).$('ig-additional-actions'));
   }
 
-  async getRequirementAssignmentHash(jobTrackTitle: string, requirementTitle: string) {
-    const $assignments = await this.getRequirementSelector(jobTrackTitle, requirementTitle).$$('ig-info-field');
-    const hash = [];
+  async getRequirementAssignmentHash(jobTrackTitle: string, requirementTitle: string): Promise<string> {
+    const $assignments: any[] = await this.getRequirementSelector(jobTrackTitle, requirementTitle).$$('ig-info-field');
+    const hash: string[] = [];
 
     for (const $asignment of $assignments) {
       hash.push(
@@ -95,39 +95,39 @@ export class JobFamilyRequirementsPage extends JobFamilyPage {
     return hash.join('~');
   }
 
-  getRequirementPSLevel(jobTrackTitle: string, requirementTitle: string, jobLevelTitle: string) {
+  getRequirementPSLevel(jobTrackTitle: string, requirementTitle: string, jobLevelTitle: string): promise.Promise<string> {
     return this.getRequirementSelector(jobTrackTitle, requirementTitle).$(`[e2e-id="${jobLevelTitle}"] ig-proficiency-scale-level-type`).getText();
   }
 
-  private getRequirementSelector(jobTrackTitle: string, requirementTitle: string) {
+  private getRequirementSelector(jobTrackTitle: string, requirementTitle: string): ElementFinder {
     return getElementByText('ig-entity-requirement', requirementTitle, getElementByText('ig-job-family-track', jobTrackTitle));
   }
 
-  getRequirementsCount(jobTrackTitle: string) {
+  getRequirementsCount(jobTrackTitle: string): promise.Promise<number> {
     return getElementByText('ig-job-family-track', jobTrackTitle).$$('ig-entity-requirement').count();
   }
 
-  isAddRequirementsButtonDisplayed() {
+  isAddRequirementsButtonDisplayed(): Promise<boolean> {
     return isDisplayed(this.$addRequirementsButton);
   }
 
-  isAssignButtonDisplayed(jobTrackTitle: string, requirementTitle: string) {
+  isAssignButtonDisplayed(jobTrackTitle: string, requirementTitle: string): Promise<boolean> {
     return isDisplayed(getElementByText('button', getI18nText('assign'), this.getRequirementSelector(jobTrackTitle, requirementTitle)));
   }
 
-  isCoreRequirement(jobTrackTitle: string, requirementTitle: string) {
+  isCoreRequirement(jobTrackTitle: string, requirementTitle: string): Promise<boolean> {
     return isDisplayed(getElementByText('ig-status span', getI18nText('core'), this.getRequirementSelector(jobTrackTitle, requirementTitle)));
   }
 
-  isRequirementAdditionalActionsDisplayed(jobTrackTitle: string, requirementTitle: string) {
+  isRequirementAdditionalActionsDisplayed(jobTrackTitle: string, requirementTitle: string): Promise<boolean> {
     return isDisplayed(this.getRequirementSelector(jobTrackTitle, requirementTitle).$('ig-additional-actions'));
   }
 
-  isRequirementDisplayed(jobTrackTitle: string, requirementTitle: string) {
+  isRequirementDisplayed(jobTrackTitle: string, requirementTitle: string): Promise<boolean> {
     return isDisplayed(this.getRequirementSelector(jobTrackTitle, requirementTitle));
   }
 
-  async navigate() {
+  async navigate(): Promise<void> {
     await this.isDisplayedAssert();
     await clickOnElement(getElementByText('ig-tabs-navigation a', getI18nText('requirements')));
     await waitUntil(() =>  isDisplayed($('ig-requirements-container')), false);

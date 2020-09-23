@@ -1,4 +1,4 @@
-import { $ } from 'protractor';
+import { $, ElementFinder } from 'protractor';
 
 import {
   clickOnElement,
@@ -17,20 +17,20 @@ import { CreateGroupDialog, CompetenciesGroupPage } from '../group';
 import { CompetenciesGroupsPage } from './groups.po';
 
 export class MyCompetenciesGroupsPage extends CompetenciesGroupsPage {
-  private readonly $createGroupButton = $('[e2e-id="createGroupButton"]');
+  private readonly $createGroupButton: ElementFinder = $('[e2e-id="createGroupButton"]');
 
-  async clickOnCreateCompetencyButton(competencyGroupId: string) {
+  async clickOnCreateCompetencyButton(competencyGroupId: string): Promise<void> {
     await clickOnElement(this.getCreateCompetencyButtonSelector(competencyGroupId));
   }
 
-  async clickOnCreateGroupButton() {
+  async clickOnCreateGroupButton(): Promise<void> {
     await clickOnElement(this.$createGroupButton);
   }
 
   async createAndNavigateToCompetencyGroup(
     groupName: string = generateName(),
     coeName: string = 'Engagement - IntelliGrowth',
-  ) {
+  ): Promise<string> {
     await this.navigate();
 
     const createGroupDialog = new CreateGroupDialog();
@@ -53,36 +53,36 @@ export class MyCompetenciesGroupsPage extends CompetenciesGroupsPage {
     return competencyGroupId;
   }
 
-  getCompetencyGroupId(name: string) {
+  getCompetencyGroupId(name: string): Promise<string> {
     return getItemId('ig-entity-card > a[href*="/group/"]', name);
   }
 
-  private getCreateCompetencyButtonSelector(competencyGroupId: string) {
+  private getCreateCompetencyButtonSelector(competencyGroupId: string): ElementFinder {
     return $(`[e2e-id="createCompetencyButton-${competencyGroupId}"]`);
   }
 
-  isCompetencyCreated(name: string) {
+  isCompetencyCreated(name: string): Promise<boolean> {
     return isItemPresent('ig-competencies-nodes-card', name);
   }
 
-  isCreateCompetencyButtonDisplayed(competencyGroupId: string) {
+  isCreateCompetencyButtonDisplayed(competencyGroupId: string): Promise<boolean> {
     return isDisplayed(this.getCreateCompetencyButtonSelector(competencyGroupId));
   }
 
-  isCreateGroupButtonDisplayed() {
+  isCreateGroupButtonDisplayed(): Promise<boolean> {
     return isDisplayed(this.$createGroupButton);
   }
 
-  async navigate() {
+  async navigate(): Promise<void> {
     await super.navigate();
 
-    const $myGroupsContainer = $('ig-my-competencies-groups-container');
+    const $myGroupsContainer: ElementFinder = $('ig-my-competencies-groups-container');
 
     await clickOnElement(getElementByText('ig-tabs-navigation a', getI18nText('myGroups')));
     await waitUntil(() => isDisplayed($myGroupsContainer), false);
   }
 
-  async navigateToCompetencyGroup(id: string) {
+  async navigateToCompetencyGroup(id: string): Promise<void> {
     const groupPage = new CompetenciesGroupPage();
 
     await clickOnElement($(`[href$="/group/${id}"]`));

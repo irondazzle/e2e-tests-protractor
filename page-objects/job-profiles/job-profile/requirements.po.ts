@@ -1,4 +1,4 @@
-import { $, $$ } from 'protractor';
+import { $, $$, ElementFinder, promise } from 'protractor';
 
 import { clickOnElement, getElementByText, isDisplayed, waitUntil } from '@e2e/helpers/common-helper';
 import { getI18nText } from '@e2e/helpers/i18n-helper';
@@ -12,9 +12,9 @@ import { AddJobProfileRequirementsDialog } from './add-job-profile-requirements-
 import { JobProfilePage } from './job-profile.po';
 
 export class JobProfileRequirementsPage extends JobProfilePage {
-  private readonly $addRequirementsButton = $('[e2e-id="addRequirementsButton"] button');
+  private readonly $addRequirementsButton: ElementFinder = $('[e2e-id="addRequirementsButton"] button');
 
-  async addRequirement(requirementPath: string[]) {
+  async addRequirement(requirementPath: string[]): Promise<void> {
     const addJobProfileRequirementsDialog = new AddJobProfileRequirementsDialog();
 
     await this.clickOnAddRequirementsButton();
@@ -30,10 +30,10 @@ export class JobProfileRequirementsPage extends JobProfilePage {
     await waitUntil(() => this.isRequirementDisplayed(requirementPath[requirementPath.length - 1]), false);
   }
 
-  async assignRequirement(requirementTitle: string) {
+  async assignRequirement(requirementTitle: string): Promise<Map<string, string>> {
     const editEntityRequirementPage = new EditEntityRequirementPage();
     const jobLevelsToPSLevelsMap: Map<string, string> = new Map();
-    const requirementAssignmentHash = await this.getRequirementAssignmentHash(requirementTitle);
+    const requirementAssignmentHash: string = await this.getRequirementAssignmentHash(requirementTitle);
 
     if (await this.isAssignButtonDisplayed(requirementTitle)) {
       await this.clickOnAssignButton(requirementTitle);
@@ -48,7 +48,7 @@ export class JobProfileRequirementsPage extends JobProfilePage {
 
     await editEntityRequirementPage.clickOnNextPSLevel(0);
 
-    const jobLevelsCount = await editEntityRequirementPage.getJobLevelsCount();
+    const jobLevelsCount: number = await editEntityRequirementPage.getJobLevelsCount();
 
     await editEntityRequirementPage.clickOnNextPSLevel(randomNumber(0, jobLevelsCount - 1));
 
@@ -67,21 +67,21 @@ export class JobProfileRequirementsPage extends JobProfilePage {
     return jobLevelsToPSLevelsMap;
   }
 
-  async clickOnAddRequirementsButton() {
+  async clickOnAddRequirementsButton(): Promise<void> {
     await clickOnElement(this.$addRequirementsButton);
   }
 
-  async clickOnAssignButton(requirementTitle: string) {
+  async clickOnAssignButton(requirementTitle: string): Promise<void> {
     await clickOnElement(getElementByText('button', getI18nText('assign'), this.getRequirementSelector(requirementTitle)));
   }
 
-  async clickOnRequirementAdditionalActions(requirementTitle: string) {
+  async clickOnRequirementAdditionalActions(requirementTitle: string): Promise<void> {
     await clickOnElement(this.getRequirementSelector(requirementTitle).$('ig-additional-actions'));
   }
 
-  async getRequirementAssignmentHash(requirementTitle: string) {
-    const $assignments = await this.getRequirementSelector(requirementTitle).$$('ig-info-field');
-    const hash = [];
+  async getRequirementAssignmentHash(requirementTitle: string): Promise<string> {
+    const $assignments: any[] = await this.getRequirementSelector(requirementTitle).$$('ig-info-field');
+    const hash: string[] = [];
 
     for (const $asignment of $assignments) {
       hash.push(
@@ -93,50 +93,50 @@ export class JobProfileRequirementsPage extends JobProfilePage {
     return hash.join('~');
   }
 
-  getRequirementPSLevel(requirementTitle: string, jobLevelTitle: string) {
+  getRequirementPSLevel(requirementTitle: string, jobLevelTitle: string): promise.Promise<string> {
     return this.getRequirementSelector(requirementTitle).$(`[e2e-id="${jobLevelTitle}"] ig-proficiency-scale-level-type`).getText();
   }
 
-  private getRequirementSelector(requirementTitle: string) {
+  private getRequirementSelector(requirementTitle: string): ElementFinder {
     return getElementByText('ig-entity-requirement', requirementTitle);
   }
 
-  getRequirementsCount() {
+  getRequirementsCount(): promise.Promise<number> {
     return $$('ig-entity-requirement').count();
   }
 
-  isAddRequirementsButtonDisplayed() {
+  isAddRequirementsButtonDisplayed(): Promise<boolean> {
     return isDisplayed(this.$addRequirementsButton);
   }
 
-  isAssignButtonDisplayed(requirementTitle: string) {
+  isAssignButtonDisplayed(requirementTitle: string): Promise<boolean> {
     return isDisplayed(getElementByText('button', getI18nText('assign'), this.getRequirementSelector(requirementTitle)));
   }
 
-  isCoreRequirement(requirementTitle: string) {
+  isCoreRequirement(requirementTitle: string): Promise<boolean> {
     return isDisplayed(getElementByText('ig-status span', getI18nText('core'), this.getRequirementSelector(requirementTitle)));
   }
 
-  isJobFamilyRequirement(requirementTitle: string) {
+  isJobFamilyRequirement(requirementTitle: string): Promise<boolean> {
     return isDisplayed(getElementByText('ig-status span', getI18nText('jobFamily'), this.getRequirementSelector(requirementTitle)));
   }
 
-  isRequirementAdditionalActionsDisplayed(requirementTitle: string) {
+  isRequirementAdditionalActionsDisplayed(requirementTitle: string): Promise<boolean> {
     return isDisplayed(this.getRequirementSelector(requirementTitle).$('ig-additional-actions'));
   }
 
-  isRequirementDisplayed(requirementTitle: string) {
+  isRequirementDisplayed(requirementTitle: string): Promise<boolean> {
     return isDisplayed(this.getRequirementSelector(requirementTitle));
   }
 
-  async navigate() {
+  async navigate(): Promise<void> {
     await this.isDisplayedAssert();
     await clickOnElement(getElementByText('ig-tabs-navigation a', getI18nText('requirements')));
     await waitUntil(() =>  isDisplayed($('ig-requirements-container')), false);
   }
 
-  async removeRequirement(title: string) {
-    const oldRequirementsCount = await this.getRequirementsCount();
+  async removeRequirement(title: string): Promise<void> {
+    const oldRequirementsCount: number = await this.getRequirementsCount();
     const removeEntityRequirementDialog = new RemoveEntityRequirementDialog();
 
     await this.clickOnRequirementAdditionalActions(title);

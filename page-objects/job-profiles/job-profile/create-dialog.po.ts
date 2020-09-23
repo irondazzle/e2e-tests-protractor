@@ -1,92 +1,89 @@
-import { $, $$ } from 'protractor';
+import { $, $$, ElementFinder, promise } from 'protractor';
 
-import { clearTextField, clickOnElement, getElementByText, isDisplayed, pressEnterKey } from '@e2e/helpers/common-helper';
+import { clearTextField, getElementByText, isDisplayed, pressEnterKey } from '@e2e/helpers/common-helper';
 
-export class CreateJobProfileDialog {
-  private readonly $container = $('ig-create-job-profile-dialog');
-  private readonly $firstAutoCompleteItem = $$('mat-option[role="option"]').first();
-  private readonly $jobTracks = this.$container.$('[formcontrolname="jobFamilyTrackId"]');
-  private readonly $jobTracksFieldError = this.$container.$('[e2e-id="jobTracksField"] mat-error');
-  private readonly $nameField = this.$container.$('[e2e-id="nameField"] input');
-  private readonly $nameFieldError = this.$container.$('[e2e-id="nameField"] mat-error');
-  private readonly $ownerField = this.$container.$('ig-users-autocomplete input');
-  private readonly $ownerFieldError = this.$container.$('ig-users-autocomplete mat-error');
+import { BaseDialog } from '../../base-dialog.po';
 
-  async clearOwnerField() {
+export class CreateJobProfileDialog extends BaseDialog {
+  private readonly $firstAutoCompleteItem: ElementFinder = $$('mat-option[role="option"]').first();
+  private readonly $jobTracks: ElementFinder = this.$container.$('[formcontrolname="jobFamilyTrackId"]');
+  private readonly $jobTracksFieldError: ElementFinder = this.$container.$('[e2e-id="jobTracksField"] mat-error');
+  private readonly $nameField: ElementFinder = this.$container.$('[e2e-id="nameField"] input');
+  private readonly $nameFieldError: ElementFinder = this.$container.$('[e2e-id="nameField"] mat-error');
+  private readonly $ownerField: ElementFinder = this.$container.$('ig-users-autocomplete input');
+  private readonly $ownerFieldError: ElementFinder = this.$container.$('ig-users-autocomplete mat-error');
+
+  constructor() {
+    super($('ig-create-job-profile-dialog'));
+  }
+
+  async clearOwnerField(): Promise<void> {
     await clearTextField(this.$ownerField);
     await pressEnterKey();
   }
 
-  async clickOnSubmitButton() {
-    await clickOnElement(this.$container.$('[type="submit"]'));
-  }
-
-  private getJobTrackSelector(jobTrackTitle: string) {
+  private getJobTrackSelector(jobTrackTitle: string): ElementFinder {
     return getElementByText('ig-chips ig-chip', jobTrackTitle, this.$jobTracks);
   }
 
-  getJobTracksFieldErrorText() {
+  getJobTracksFieldErrorText(): promise.Promise<string> {
     return this.$jobTracksFieldError.getText();
   }
 
-  getNameFieldErrorText() {
+  getNameFieldErrorText(): promise.Promise<string> {
     return this.$nameFieldError.getText();
   }
 
-  getNameFieldValue() {
+  getNameFieldValue(): promise.Promise<string> {
     return this.$nameField.getAttribute('value');
   }
 
-  getOwnerFieldValue() {
+  getOwnerFieldValue(): promise.Promise<string> {
     return this.$ownerField.getAttribute('value');
   }
 
-  getOwnerFieldErrorText() {
+  getOwnerFieldErrorText(): promise.Promise<string> {
     return this.$ownerFieldError.getText();
   }
 
-  isDisplayed() {
-    return isDisplayed(this.$container, { timer: true, withoutScroll: true });
-  }
-
-  isJobTracksDisplayed() {
+  isJobTracksDisplayed(): Promise<boolean> {
     return isDisplayed(this.$jobTracks, { withoutScroll: true });
   }
 
-  isJobTracksFieldErrorDisplayed() {
+  isJobTracksFieldErrorDisplayed(): Promise<boolean>{
     return isDisplayed(this.$jobTracksFieldError, { withoutScroll: true });
   }
 
-  async isJobTrackSelected(jobTrackTitle: string) {
+  async isJobTrackSelected(jobTrackTitle: string): Promise<boolean> {
     return (await this.getJobTrackSelector(jobTrackTitle).getAttribute('class')).includes('selected');
   }
 
-  isNameFieldDisplayed() {
+  isNameFieldDisplayed(): Promise<boolean> {
     return isDisplayed(this.$nameField, { withoutScroll: true });
   }
 
-  isNameFieldErrorDisplayed() {
+  isNameFieldErrorDisplayed(): Promise<boolean> {
     return isDisplayed(this.$nameFieldError, { withoutScroll: true });
   }
 
-  isOwnerFieldDisplayed() {
+  isOwnerFieldDisplayed(): Promise<boolean> {
     return isDisplayed(this.$ownerField, { withoutScroll: true });
   }
 
-  isOwnerFieldErrorDisplayed() {
+  isOwnerFieldErrorDisplayed(): Promise<boolean> {
     return isDisplayed(this.$ownerFieldError, { withoutScroll: true });
   }
 
-  async setJobTrack(jobTrackTitle: string) {
+  async setJobTrack(jobTrackTitle: string): Promise<void> {
     await this.getJobTrackSelector(jobTrackTitle).click();
   }
 
-  async setNameFieldValue(name: string) {
+  async setNameFieldValue(name: string): Promise<void> {
     await this.$nameField.clear();
     await this.$nameField.sendKeys(name);
   }
 
-  async setOwnerFieldValue(name: string) {
+  async setOwnerFieldValue(name: string): Promise<void> {
     await this.$ownerField.clear();
     await this.$ownerField.sendKeys(name);
     await this.$firstAutoCompleteItem.click();

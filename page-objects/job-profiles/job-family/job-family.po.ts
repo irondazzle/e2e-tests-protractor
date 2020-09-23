@@ -1,4 +1,4 @@
-import { $ } from 'protractor';
+import { $, ElementFinder, promise } from 'protractor';
 
 import { clickOnElement, isDisplayed, waitUntil } from '@e2e/helpers/common-helper';
 import { getI18nText } from '@e2e/helpers/i18n-helper';
@@ -8,21 +8,21 @@ import { randomNumber } from '@e2e/helpers/random-helper';
 import { DefineJobTracksDialog } from './define-job-tracks-dialog.po';
 
 export class JobFamilyPage {
-  private readonly $container = $('ig-job-family-container');
-  private readonly $additionalActions = this.$container.$('ig-additional-actions');
-  private readonly $defineJobTracksButton = this.$container.$('[e2e-id="defineJobTracksButton"]')
+  private readonly $container: ElementFinder = $('ig-job-family-container');
+  private readonly $additionalActions: ElementFinder = this.$container.$('ig-additional-actions');
+  private readonly $defineJobTracksButton: ElementFinder = this.$container.$('[e2e-id="defineJobTracksButton"]')
 
-  async clickOnAdditionalActions() {
+  async clickOnAdditionalActions(): Promise<void> {
     await clickOnElement(this.$additionalActions);
   }
 
-  async clickOnDefineJobTracksButton() {
+  async clickOnDefineJobTracksButton(): Promise<void> {
     await clickOnElement(this.$defineJobTracksButton);
   }
 
-  async defineJobTracks(jobTracks?: string[]) {
+  async defineJobTracks(jobTracks?: string[]): Promise<string[]> {
     const defineJobTracksDialog = new DefineJobTracksDialog();
-    const startJobTrackIndex = randomNumber(0, 3);
+    const startJobTrackIndex: number = randomNumber(0, 3);
     let jobTracksList: string[];
 
     if (jobTracks) {
@@ -67,27 +67,27 @@ export class JobFamilyPage {
     return jobTracksList;
   }
 
-  getBreadcrumbsName() {
+  getBreadcrumbsName(): promise.Promise<string> {
     return this.$container.$('ig-breadcrumbs span').getText();
   }
 
-  getHeaderName() {
+  getHeaderName(): promise.Promise<string> {
     return this.$container.$('ig-page-title').getText();
   }
 
-  isAdditionalActionsDisplayed() {
+  isAdditionalActionsDisplayed(): Promise<boolean> {
     return isDisplayed(this.$additionalActions, { withoutScroll: true });
   }
 
-  isDefineJobTracksButtonDisplayed() {
+  isDefineJobTracksButtonDisplayed(): Promise<boolean> {
     return isDisplayed(this.$defineJobTracksButton, { withoutScroll: true });
   }
 
-  isDisplayed() {
+  isDisplayed(): Promise<boolean> {
     return isDisplayed(this.$container, { withoutScroll: true });
   }
 
-  async isDisplayedAssert() {
+  async isDisplayedAssert(): Promise<void> {
     const isDisplayed = await this.isDisplayed();
 
     if (!isDisplayed) {

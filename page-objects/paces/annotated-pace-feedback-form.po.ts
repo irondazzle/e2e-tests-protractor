@@ -1,4 +1,4 @@
-import { $ } from 'protractor';
+import { $, promise } from 'protractor';
 
 import { clearTextField, clickOnElement, isDisplayed, getElementByText } from '@e2e/helpers/common-helper';
 import { getI18nText } from '@e2e/helpers/i18n-helper';
@@ -10,16 +10,16 @@ export class AnnotatedPaceFeedbackFormPage {
   private readonly $container = $('ig-annotated-pace-feedback-form');
   private readonly $commentField = this.$container.$('ig-comment-control textarea');
 
-  async clickOnSubmitButton() {
+  async clickOnSubmitButton(): Promise<void> {
     await clickOnElement(this.$container.$('[type="submit"]'));
   }
 
-  getComment() {
+  getComment(): promise.Promise<string> {
     return this.$commentField.getAttribute('value');
   }
 
-  async getStatus() {
-    const $statuses = await this.$container.$$('mat-radio-button');
+  async getStatus(): Promise<string> {
+    const $statuses: any[] = await this.$container.$$('mat-radio-button');
 
     for (const $status of $statuses) {
       if ((await $status.getAttribute('class')).includes('mat-radio-checked')) {
@@ -30,11 +30,11 @@ export class AnnotatedPaceFeedbackFormPage {
     return null;
   }
 
-  isDisplayed() {
+  isDisplayed(): Promise<boolean> {
     return isDisplayed(this.$container);
   }
 
-  async setComment() {
+  async setComment(): Promise<string> {
     const comment = randomText(randomNumber(10, 50));
 
     await this.$commentField.click();
@@ -44,7 +44,7 @@ export class AnnotatedPaceFeedbackFormPage {
     return comment;
   }
 
-  async setStatus(status: PaceFeedbackStatus) {
+  async setStatus(status: PaceFeedbackStatus): Promise<void> {
     if (status === PaceFeedbackStatus.Useful) {
       await clickOnElement(getElementByText('mat-radio-button', getI18nText('useful'), this.$container));
     }

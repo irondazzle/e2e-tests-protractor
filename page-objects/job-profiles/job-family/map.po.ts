@@ -1,4 +1,4 @@
-import { $ } from 'protractor';
+import { $, ElementFinder } from 'protractor';
 
 import {
   clickOnElement,
@@ -17,27 +17,27 @@ import { CreateJobProfileDialog, JobProfilePage } from '../job-profile';
 import { JobFamilyPage } from './job-family.po';
 
 export class JobFamilyMapPage extends JobFamilyPage {
-  private readonly $createChildButton = $('[e2e-id="createChildButton"]');
-  private readonly $createJobProfileButton = $('[e2e-id="createJobProfileButton"]');
-  private readonly $createJobProfileGroupButton = $('[e2e-id="createJobProfileGroupButton"]');
+  private readonly $createChildButton: ElementFinder = $('[e2e-id="createChildButton"]');
+  private readonly $createJobProfileButton: ElementFinder = $('[e2e-id="createJobProfileButton"]');
+  private readonly $createJobProfileGroupButton: ElementFinder = $('[e2e-id="createJobProfileGroupButton"]');
 
-  async clickOnCreateChildButton() {
+  async clickOnCreateChildButton(): Promise<void> {
     await clickOnElement(this.$createChildButton);
   }
 
-  async clickOnСreateJobProfileButton() {
+  async clickOnСreateJobProfileButton(): Promise<void> {
     await clickOnElement(this.$createJobProfileButton);
   }
 
-  async clickOnСreateJobProfileGroupButton() {
+  async clickOnСreateJobProfileGroupButton(): Promise<void> {
     await clickOnElement(this.$createJobProfileGroupButton);
   }
 
-  async createAndNavigateToJobProfile(jobTrack: string, jobProfileName: string = generateName()) {
+  async createAndNavigateToJobProfile(jobTrack: string, jobProfileName: string = generateName()): Promise<string> {
     await this.navigate();
 
     const createJobProfileDialog = new CreateJobProfileDialog();
-    const ownerName = await getCurrentUsername();
+    const ownerName: string = await getCurrentUsername();
 
     await this.clickOnCreateChildButton();
     await waitUntil(() => this.isCreateJobProfileButtonDisplayed(), false);
@@ -59,7 +59,7 @@ export class JobFamilyMapPage extends JobFamilyPage {
     return jobProfileId;
   }
 
-  async createAndNavigateToJobProfileGroup(jobProfileGroupName: string = generateName()) {
+  async createAndNavigateToJobProfileGroup(jobProfileGroupName: string = generateName()): Promise<string> {
     await this.navigate();
 
     const createJobProfileGroupDialog = new CreateJobProfileGroupDialog();
@@ -75,53 +75,53 @@ export class JobFamilyMapPage extends JobFamilyPage {
     await createJobProfileGroupDialog.clickOnSubmitButton();
     await waitUntil(() => createJobProfileGroupDialog.isDisplayed(), true);
 
-    const jobProfileGroupId = await this.getJobProfileGroupId(jobProfileGroupName);
+    const jobProfileGroupId: string = await this.getJobProfileGroupId(jobProfileGroupName);
 
     await this.navigateToJobProfileGroup(jobProfileGroupId);
 
     return jobProfileGroupId;
   }
 
-  getJobProfileId(name: string) {
+  getJobProfileId(name: string): Promise<string> {
     return getItemId('ig-entities-card-tile > a[href*="/job-profile/"]', name);
   }
 
-  getJobProfileGroupId(name: string) {
+  getJobProfileGroupId(name: string): Promise<string> {
     return getItemId('ig-entities-card-tile > a[href*="/job-profile-group/"]', name);
   }
 
-  isCreateChildButtonDisplayed() {
+  isCreateChildButtonDisplayed(): Promise<boolean> {
     return isDisplayed(this.$createChildButton);
   }
 
-  async isCreateChildButtonEnabled() {
-    const disabledValue = await this.$createChildButton.getAttribute('disabled');
+  async isCreateChildButtonEnabled(): Promise<boolean> {
+    const disabledValue: string = await this.$createChildButton.getAttribute('disabled');
 
     return !JSON.parse(disabledValue || null);
   }
 
-  isCreateJobProfileButtonDisplayed() {
+  isCreateJobProfileButtonDisplayed(): Promise<boolean> {
     return isDisplayed(this.$createJobProfileButton, { timer: true, withoutScroll: true });
   }
 
-  isCreateJobProfileGroupButtonDisplayed() {
+  isCreateJobProfileGroupButtonDisplayed(): Promise<boolean> {
     return isDisplayed(this.$createJobProfileGroupButton, { timer: true, withoutScroll: true });
   }
 
-  async navigate() {
+  async navigate(): Promise<void> {
     await this.isDisplayedAssert();
     await clickOnElement(getElementByText('ig-tabs-navigation a', getI18nText('jobFamilyMap')));
     await waitUntil(() =>  isDisplayed($('ig-job-family-map-container')), false);
   }
 
-  async navigateToJobProfile(id: string) {
+  async navigateToJobProfile(id: string): Promise<void> {
     const jobProfilePage = new JobProfilePage();
 
     await clickOnElement($(`[href$="/job-profile/${id}"]`));
     await waitUntil(() => jobProfilePage.isDisplayed(), false);
   }
 
-  async navigateToJobProfileGroup(id: string) {
+  async navigateToJobProfileGroup(id: string): Promise<void> {
     const jobProfileGroupPage = new JobProfileGroupPage();
 
     await clickOnElement($(`[href$="/job-profile-group/${id}"]`));
